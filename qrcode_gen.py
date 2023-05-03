@@ -57,9 +57,9 @@ for i, content in enumerate(contents):
     # 在全局画布上添加二维码图片
     global_canvas.paste(img_qr, (x, y))
 
-    # 添加字符串的最后8位
+    # 添加字符串
     draw = ImageDraw.Draw(global_canvas)
-    draw.text((x+50, y + qr_size - 10), content[-3:], font=font, fill='black')
+    draw.text((x, y + qr_size - 20), content, font=font, fill='black')
 
     # 控制图片位置
     if i % row_qr_count == row_qr_count - 1:  # 如果到达行末尾，换行
