@@ -25,7 +25,7 @@ canvas_height = -(-len(contents) // row_qr_count) * (qr_size + qr_padding)
 global_canvas = Image.new('RGB', (canvas_width, canvas_height), 'white')
 
 # 设置字体
-fontname = 'Ubuntu-RI.ttf' if OS == 'Linux' else 'arial.ttf'
+fontname = 'DejaVuSans.ttf' if OS == 'Linux' else 'arial.ttf'
 font = ImageFont.truetype(fontname, 48)
 
 # 定义变量控制二维码图片的位置
