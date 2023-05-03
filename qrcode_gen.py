@@ -2,6 +2,7 @@ import qrcode
 from PIL import Image, ImageDraw, ImageFont
 import platform
 
+# Get platform imformation
 OS = platform.system() # Windows, Linux
 
 # Open the file and read the string data on each line
