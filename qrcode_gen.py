@@ -25,7 +25,7 @@ canvas_height = -(-len(contents) // row_qr_count) * (qr_size + qr_padding)
 global_canvas = Image.new('RGB', (canvas_width, canvas_height), 'white')
 
 # Set font
-fontname = 'DejaVuSans.ttf' if OS == 'Linux' else 'arial.ttf'
+fontname = 'arial.ttf' if OS == 'Windows' else 'DejaVuSans.ttf'
 font = ImageFont.truetype(fontname, 48)
 
 # Define variables to control the position of each QR code image
