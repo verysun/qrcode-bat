@@ -1,5 +1,8 @@
 import qrcode
 from PIL import Image, ImageDraw, ImageFont
+import platform
+
+OS = platform.system() # Windows, Linux
 
 # 打开文件并读取内容
 file = open('qrcode_contents.txt', 'r')
@@ -22,7 +25,8 @@ canvas_height = -(-len(contents) // row_qr_count) * (qr_size + qr_padding)
 global_canvas = Image.new('RGB', (canvas_width, canvas_height), 'white')
 
 # 设置字体
-font = ImageFont.truetype('arial.ttf', 48)
+fontname = 'Ubuntu-RI.ttf' if OS == 'Linux' else 'arial.ttf'
+font = ImageFont.truetype(fontname, 48)
 
 # 定义变量控制二维码图片的位置
 x = 0

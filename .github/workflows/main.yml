@@ -30,13 +30,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install pillow qrcode
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: Install ttf
-        run: |
-          sudo apt install ttf-mscorefonts-installer
-          sudo fc-cache   
-      - name: Test ttf
-        run: |
-          sudo fc-match arial
         
       - name: Run python code
         run: |
