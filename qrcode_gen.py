@@ -4,90 +4,91 @@ import platform
 
 OS = platform.system() # Windows, Linux
 
-# 打开文件并读取内容
+# Open the file and read the string data on each line
 file = open('qrcode_contents.txt', 'r')
 contents = file.read().splitlines()
 
-# 计算二维码图片大小和间距
-qr_size = 200  # 每个二维码图片大小为200 x 200像素
-qr_padding = 40  # 二维码图片之间的间距为40像素
+# Calculate the size and spacing of QR code images
+qr_size = 200  # Each QR code image has a size of 200 x 200 pixels
+qr_padding = 40  # The spacing between the QR code images is 40 pixels
 
-# 定义每行每列的二维码数量和A4纸张大小
-a4_width = 2480  # A4纸张宽度，单位是像素，Pillow默认的dpi为72
-a4_height = 3508  # A4纸张高度，单位是像素，Pillow默认的dpi为72
-row_qr_count = (int)(a4_width / (qr_size + qr_padding))  # 每一行二维码数量
+# Define the number of QR codes per row and column and the size of the A4 paper
+a4_width = 2480 
+a4_height = 3508
+row_qr_count = (int)(a4_width / (qr_size + qr_padding))  # QR code number per row
 
-# 计算画布大小
+# Calculate the size of the canvas
 canvas_width = row_qr_count * (qr_size + qr_padding) - qr_padding
 canvas_height = -(-len(contents) // row_qr_count) * (qr_size + qr_padding)
 
-# 创建白色底的全局画布
+# Create a global canvas with a white background
 global_canvas = Image.new('RGB', (canvas_width, canvas_height), 'white')
 
-# 设置字体
+# Set font
 fontname = 'DejaVuSans.ttf' if OS == 'Linux' else 'arial.ttf'
 font = ImageFont.truetype(fontname, 48)
 
-# 定义变量控制二维码图片的位置
+# Define variables to control the position of each QR code image
 x = 0
 y = 0
 
-# 循环处理每个字符串
+# Loop through each string in the list
 for i, content in enumerate(contents):
-    # 创建QRCode对象，设置二维码大小和边距等属性
+    # Create a QRCode object and set properties such as size and margin
     qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L,
                        box_size=10, border=4)
     
     print(i)
-    # 添加数据并生成二维码
+    # Add data to the QRCode object and generate the QR code image
     qr.add_data(content)
     qr.make(fit=True)
 
-    # 获取二维码图片，并调整大小为qr_size x qr_size像素
+    # Get the QR code image and adjust its size to qr_size x qr_size pixels
     img_qr = qr.make_image(fill_color='black', back_color='white')
     img_qr = img_qr.resize((qr_size, qr_size), Image.ANTIALIAS)
 
-    # 判断二维码是否越界
+    # Check if the QR code image would go out of bounds
     if x + qr_size > global_canvas.width:
-        # 如果越界了就移到下一行，同时重置x的值
+        # If it goes out of bounds, move to the next row and reset the value of x
         y += qr_size + qr_padding
         x = 0
 
     if y + qr_size > global_canvas.height:
-        # 如果越界了就退出循环
+        # If it goes out of bounds, break out of the loop
         break
 
 
-    # 在全局画布上添加二维码图片
+    # Add the QR code image to the global canvas
     global_canvas.paste(img_qr, (x, y))
 
-    # 添加字符串
+    # Add the string content
     draw = ImageDraw.Draw(global_canvas)
     draw.text((x, y + qr_size - 20), content, font=font, fill='black')
 
-    # 控制图片位置
-    if i % row_qr_count == row_qr_count - 1:  # 如果到达行末尾，换行
+    # Control the position of the images
+    if i % row_qr_count == row_qr_count - 1:  # If it reaches the end of a row, move to the next row
         x = 0
         y += qr_size + qr_padding + 10
-    else:  # 否则移到下一列
+    else:  # Otherwise, move to the next column
         x += qr_size + qr_padding
 
-# 计算需要拆分成几张A4纸张
-canvas_count = -(-global_canvas.height // a4_height)  # 对高度向上取整，计算出需要的画布数量
+# Calculate how many A4 paper sheets are required
+canvas_count = -(-global_canvas.height // a4_height)  # Round up the number of canvas needed
 
-# 循环处理每个A4画布
+# Loop through each A4 canvas
 for i in range(canvas_count):
-    # 创建白色底的单张A4画布
+    # Create a new A4 canvas with a white background
     canvas = Image.new('RGB', (a4_width, a4_height), 'white')
 
-    # 设置要粘贴的全局画布区域
+    # Set the region of the global canvas to copy onto the current A4 canvas
     paste_x = 0
     paste_y = i * a4_height
     paste_width = global_canvas.width
     paste_height = min(a4_height, global_canvas.height - paste_y)
 
-    # 粘贴全局画布上对应区域的内容到单张A4画布上
+    # Copy the corresponding region from the global canvas to the current A4 canvas
     canvas.paste(global_canvas.crop((paste_x, paste_y, paste_x + paste_width, paste_y + paste_height)))
 
-    # 保存单张A4画布为文件
+    # Save the current A4 canvas as a file
     canvas.save('qrcodes_{}.png'.format(i+1))
+
