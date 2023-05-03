@@ -32,9 +32,9 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Install ttf
         run: |
-          apt install ttf-mscorefonts-installer
-          fc-cache
-          fc-match Arial
+          sudo apt install ttf-mscorefonts-installer
+          sudo fc-cache
+          sudo fc-match Arial
         
       - name: Run python code
         run: |
